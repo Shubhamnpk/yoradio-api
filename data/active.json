@@ -1,0 +1,90 @@
+[
+{
+    "id": "PpdCGSEQ44Ox4uLzlgcin",
+    "name": "Radio Kantipur",
+    "streamUrl": "https://radio-broadcast.ekantipur.com/stream",
+    "frequency": 96.1,
+    "address": "Subidhanagar,Tinkune, Kathmandu, Nepal",
+    "province": 3
+},
+{
+    "id": "Y_OOEauq-U3AB9GcRyuee",
+    "name": "Ujyaalo Radio Network",
+    "streamUrl": "https://stream-151.zeno.fm/h527zwd11uquv",
+    "frequency": 90.0,
+    "address": "Ujyaalo Ghar (Behind Central Zoo), Lalitpur - 4, Shanti Chowk, Jawalakhel",
+    "province": 3
+},
+{
+    "id": "XIQtxSR27snR6vkvJD2Al",
+    "name": "Kalika FM",
+    "streamUrl": "https://streaming.softnep.net:10828/;stream.nsv&type=mp3&volume=70",
+    "frequency": 95.2,
+    "address": "Bharatpur-10, Chitwan",
+    "province": 3
+},
+{
+    "id": "E_k0M6NUzwIBU4i6is8Bz",
+    "name": "Image FM",
+    "streamUrl": "https://radio-stream-relay-us.hamropatro.com/radio/8020/radio.mp3",
+    "frequency": 97.9,
+    "address": "Kathmandu, Nepal",
+    "province": 3
+},
+{
+    "id": "rlPmocaRrVIWIH1tG3H6l",
+    "name": "Radio Audio",
+    "streamUrl": "https://stream-161.zeno.fm/2w81t82wx3duv",
+    "frequency": 106.3,
+    "address": "Comedy Height Narayaneshor Marg-10, Baneshwor KTM",
+    "province": 3
+},
+{
+    "id": "p0qy74VnrANpCmab4YJ_i",
+    "name": "Swadesh FM",
+    "streamUrl": "https://stream-43.zeno.fm/xm2babvnephvv",
+    "frequency": 93.2,
+    "address": "Basantapur, Madi, Chitwan, Nepal",
+    "province": 3
+},
+{
+    "id": "WL4IaKwba1BpHxWdjZvuW",
+    "name": "Radio Candid",
+    "streamUrl": "https://radio-stream-relay-np.hamropatro.com/radio/8030/radio.mp3",
+    "frequency": 92.7,
+    "address": "Kathmandu, Nepal",
+    "province": 3
+},
+{
+    "id": "oJtKkBrW6ZxwZ6mpOQa-d",
+    "name": "Image News",
+    "streamUrl": "https://radio-stream-relay-np.hamropatro.com/radio/8050/radio.mp3",
+    "frequency": 103.6,
+    "address": "Kathmandu, Nepal",
+    "province": 3
+},
+{
+    "id": "I1Jug5DZ_H02zOkR_vTJb",
+    "name": "Synergy FM",
+    "streamUrl": "https://live.itech.host:3880/stream",
+    "frequency": 91.6,
+    "address": "Bharatpur-10 Chitwan",
+    "province": 3
+},
+{
+    "id": "-f9nyHjiHr1hhgEgGde-U",
+    "name": "Vijaya FM",
+    "streamUrl": "https://live.itech.host:3320/stream",
+    "frequency": 101.6,
+    "address": "Gaindakot-8, Nawalparasi, Nepal",
+    "province": 5
+},
+{
+    "id": "hzQLwASZSbR9xc_zT0tMh",
+    "name": "SaptaKoshi",
+    "streamUrl": "https://live.itech.host:4535/stream",
+    "frequency": 90.0,
+    "address": "Ithari-8, Sunsari, Nepal",
+    "province": 1
+}
+]
