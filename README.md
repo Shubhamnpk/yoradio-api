@@ -84,7 +84,7 @@ fetch('/data/active.json')
 Here are some amazing projects using this API:
 
 - [**Yoafsana Radio**](https://shubhamnpk.github.io/yoafsana-radio/) - A beautiful radio streaming web app
-- [**Yo Radio**](https://example.com/yoradio) - Full-featured radio platform
+- [**Yo Radio**](https://shubhamnpk.github.io/yoradio) - Full-featured radio platform
 - *Your project here!* - Contribute your creation
 
 ## Contributing
