@@ -1,0 +1,252 @@
+[
+    {
+        "id": "XA67B5-3cd9dYmfEZ6xji",
+        "name": "Radio Resunga",
+        "streamUrl": "https://live.itech.host:3260/stream",
+        "frequency": 106.2,
+        "address": "Tamghas, Gulmi",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:31:55 UTC",
+            "url": "https://live.itech.host:3260/stream"
+        }
+    },
+    {
+        "id": "HlBZ2nrii6AJbC5IqaS--",
+        "name": "Damauli FM",
+        "streamUrl": "http://streaming.hamropatro.com:8529/;",
+        "frequency": 94.2,
+        "address": "Balmandir Line, Byas - 2, Damauli, Tanahun, Gandaki Pradesh",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:31:55 UTC",
+            "url": "http://streaming.hamropatro.com:8529/;"
+        }
+    },
+    {
+        "id": "2vprwzDXqjfdbQWmVYG-N",
+        "name": "Radio Palpa",
+        "streamUrl": "http://streaming.hamropatro.com:8467/;",
+        "frequency": 97.1,
+        "address": "Rampur-5, Palpa",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:31:55 UTC",
+            "url": "http://streaming.hamropatro.com:8467/;"
+        }
+    },
+    {
+        "id": "WY2auAGQzxcnbRhrN4OPf",
+        "name": "Radio Chhimkeshwori",
+        "streamUrl": "http://streaming.hamropatro.com:8487/;",
+        "frequency": 106.2,
+        "address": "Bandipur-1, Tanahun",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:31:56 UTC",
+            "url": "http://streaming.hamropatro.com:8487/;"
+        }
+    },
+    {
+        "id": "CTpZ6AisxFZzj5euxpL6M",
+        "name": "Radio Madhesh",
+        "streamUrl": "http://streaming.hamropatro.com:8417/;",
+        "frequency": 89.3,
+        "address": "Malangwa-10, Sarlahi",
+        "province": 2,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:31:57 UTC",
+            "url": "http://streaming.hamropatro.com:8417/;"
+        }
+    },
+    {
+        "id": "Qhv-M1pquVjyOD9rb-on1",
+        "name": "Dhaulagiri Fm",
+        "streamUrl": "http://streaming.hamropatro.com:8535/;",
+        "frequency": 98.6,
+        "address": null,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:32:00 UTC",
+            "url": "http://streaming.hamropatro.com:8535/;"
+        }
+    },
+    {
+        "id": "LuyELZWQQyHov6c_nlAWq",
+        "name": "Radio Rampur",
+        "streamUrl": "http://live.itech.host:2030/stream",
+        "frequency": 103.6,
+        "address": "Palpa, Nepal",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:01 UTC",
+            "url": "http://live.itech.host:2030/stream"
+        }
+    },
+    {
+        "id": "MRyK_cgN99boJj8GgPsb3",
+        "name": "Radio Marsyangdi",
+        "streamUrl": "https://live.itech.host:9125/stream",
+        "frequency": 95.0,
+        "address": "Besishahar-2, Tamu Sangrahalaya bawan, Lamjung",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:04 UTC",
+            "url": "https://live.itech.host:9125/stream"
+        }
+    },
+    {
+        "id": "Ait0Xe7dzJQPlnhBrV1q-",
+        "name": "Radio Sanobheri FM",
+        "streamUrl": "https://live.itech.host:9425/stream",
+        "frequency": 100.8,
+        "address": "Rukum, Musikot",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:04 UTC",
+            "url": "https://live.itech.host:9425/stream"
+        }
+    },
+    {
+        "id": "HAU6ZqH5gj6suGDlIuqf3",
+        "name": "Radio Bulletin",
+        "streamUrl": "http://live.itech.host:2650/stream",
+        "frequency": 89.7,
+        "address": "Hetauda-5, Makawanpur",
+        "province": 3,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:05 UTC",
+            "url": "http://live.itech.host:2650/stream"
+        }
+    },
+    {
+        "id": "tS8xtso7li2wUAHskEecm",
+        "name": "Power FM",
+        "streamUrl": "http://streaming.hamropatro.com:8587/stream",
+        "frequency": 95.6,
+        "address": "Bandipur-1, Tanahu",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401: Unauthorized",
+            "checked_at": "2026-02-27 17:32:07 UTC",
+            "url": "http://streaming.hamropatro.com:8587/stream"
+        }
+    },
+    {
+        "id": "-SIjub787tzJOo7FFnSBM",
+        "name": "Radio Kanchanpur",
+        "streamUrl": "http://live.itechnepal.com:8294/stream",
+        "frequency": 90.2,
+        "address": "Mahendranagar -4, Kanchanpur",
+        "province": 7,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:08 UTC",
+            "url": "http://live.itechnepal.com:8294/stream"
+        }
+    },
+    {
+        "id": "U_7zMZconBW03Lgrjgz3S",
+        "name": "Radio Aandhikhola",
+        "streamUrl": "https://live.itech.host:8863/stream",
+        "frequency": null,
+        "address": "info@domainname.com",
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:12 UTC",
+            "url": "https://live.itech.host:8863/stream"
+        }
+    },
+    {
+        "id": "Wdpir-zyrywMXE7IqoD78",
+        "name": "Radio Gurkhali",
+        "streamUrl": "https://live.itech.host:9502/stream",
+        "frequency": 106.0,
+        "address": "Pokhara, Nepal",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:13 UTC",
+            "url": "https://live.itech.host:9502/stream"
+        }
+    },
+    {
+        "id": "dtSoDtSb6t7kFbFUFLQgZ",
+        "name": "Radio Badimalika",
+        "streamUrl": "https://live.itech.host:4755/stream",
+        "frequency": 95.2,
+        "address": "Trinbeni- 7, Bajura",
+        "province": 7,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:15 UTC",
+            "url": "https://live.itech.host:4755/stream"
+        }
+    },
+    {
+        "id": "WP9Xy7ITxgsl3MvILgczg",
+        "name": "Galyang FM",
+        "streamUrl": "https://live.itech.host:9107/stream",
+        "frequency": 92.2,
+        "address": "Galyang, Syangja, Gandaki Pradesh",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:19 UTC",
+            "url": "https://live.itech.host:9107/stream"
+        }
+    },
+    {
+        "id": "N3rBrzu2z5FDbqae3g6DL",
+        "name": "Popular FM 99.5",
+        "streamUrl": "https://onlineradio.websoftitnepal.com/8024/stream",
+        "frequency": 99.5,
+        "address": "इनरुवा - २ जि.वि.स.रोड, सुनसरी",
+        "province": 1,
+        "_validation": {
+            "valid": false,
+            "message": "HTML page returned (not stream)",
+            "checked_at": "2026-02-27 17:32:20 UTC",
+            "url": "https://onlineradio.websoftitnepal.com/8024/stream"
+        }
+    },
+    {
+        "id": "J6S85tHCz-pgnxVDad-O1",
+        "name": "Radio Dhorbarahi",
+        "streamUrl": "https://live.itech.host:9496/stream",
+        "frequency": 103.8,
+        "address": "Shuklagandaki-4, Dulegaunda, Tanahun",
+        "province": 4,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Stream not found",
+            "checked_at": "2026-02-27 17:32:23 UTC",
+            "url": "https://live.itech.host:9496/stream"
+        }
+    }
+]
