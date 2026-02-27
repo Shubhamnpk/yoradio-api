@@ -1,0 +1,131 @@
+[
+    {
+        "id": "hzQLwASZSbR9xc_zT0tMh",
+        "name": "SaptaKoshi FM 90.0 MHz",
+        "streamUrl": "https://live.itech.host:4535/stream",
+        "frequency": 90.0,
+        "address": "Ithari-8, Sunsari, Nepal",
+        "province": 1,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:01 UTC"
+        }
+    },
+    {
+        "id": "vf3kj6rXmKsrbRp584sv1",
+        "name": "Radio Tiger",
+        "streamUrl": "http://streaming.hamropatro.com:8637/;",
+        "frequency": 99.2,
+        "address": "Thakurbaba Municipality-1, Bhurigaun, Bardiya",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401",
+            "checked_at": "2026-02-27 15:20:04 UTC"
+        }
+    },
+    {
+        "id": "vZMSv-7_yo881Z5t8w4tP",
+        "name": "Radio Lumbini",
+        "streamUrl": "https://live.itech.host:4515/stream",
+        "frequency": 96.8,
+        "address": "Manigram Ruphandehi",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:05 UTC"
+        }
+    },
+    {
+        "id": "RVcSKrrgq7RQKjpQp28Us",
+        "name": "Radio Rajmarga",
+        "streamUrl": "http://streaming.softnep.net:8299/;",
+        "frequency": 92.1,
+        "address": "Naubishe, Dharke, Dhading",
+        "province": 3,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 401",
+            "checked_at": "2026-02-27 15:20:05 UTC"
+        }
+    },
+    {
+        "id": "G-7dc4S9rEjcWMmlpjGrN",
+        "name": "Radio Janapriya ",
+        "streamUrl": "http://live.itech.host:8792/stream",
+        "frequency": 102.4,
+        "address": "Saphebagar, Achham",
+        "province": 7,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:06 UTC"
+        }
+    },
+    {
+        "id": "kW7s8mTEfroK5PcEgsz2K",
+        "name": "Radio Lumbini",
+        "streamUrl": "https://live.itech.host:4515/stream",
+        "frequency": 96.8,
+        "address": "Tilottama-5, Manigram, Rupandehi, Lumbini",
+        "province": 5,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:08 UTC"
+        }
+    },
+    {
+        "id": "cQF9C8O1HPC2MqCRpltpB",
+        "name": "Radio Miteree",
+        "streamUrl": "https://live.itech.host:2705/stream",
+        "frequency": 98.2,
+        "address": "Phidim-4, Gadhi, Panchthar",
+        "province": 1,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:11 UTC"
+        }
+    },
+    {
+        "id": "LILbR2p37ZwCHxm0ZDw-L",
+        "name": "Radio Sahino",
+        "streamUrl": "http://live.itech.host:7093/stream",
+        "frequency": null,
+        "address": null,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:11 UTC"
+        }
+    },
+    {
+        "id": "zslomZ7bB220tXwYwIu9V",
+        "name": "Radio Jugal",
+        "streamUrl": "http://live.itechnepal.com:2160/stream",
+        "frequency": 98.1,
+        "address": "सिन्धुपाल्चोक लिसंखुपाखर-५, सिलढुङ्गा, नेपाल",
+        "province": 3,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:17 UTC"
+        }
+    },
+    {
+        "id": "rUy648ruS-0r2p4KP9OR3",
+        "name": "Radio Dhading",
+        "streamUrl": "https://live.itech.host:9454/stream",
+        "frequency": 106.0,
+        "address": "Neelkantha -5,Dhading Bensi, Dhading",
+        "province": 3,
+        "_validation": {
+            "valid": false,
+            "message": "HTTP 404 - Not Found",
+            "checked_at": "2026-02-27 15:20:26 UTC"
+        }
+    }
+]

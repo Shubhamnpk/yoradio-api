@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Yo Radio API</title>
+    <link rel="icon" type="image/svg+xml" href="images/radio-logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        'primary-dark': '#4f46e5',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .text-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            overflow: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 5px;
+        }
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans">
+    <div class="bg-animation"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-dark/80 backdrop-blur-xl border-b border-white/10 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="images/radio-logo.svg" alt="Yo Radio Logo" class="w-10 h-10 flex-shrink-0">
+                <span class="text-2xl font-bold text-gradient">Yo Radio API</span>
+            </a>
+            <nav class="hidden md:flex">
+                <ul class="flex gap-8 list-none">
+                    <li><a href="index.html" class="text-slate-400 hover:text-white font-medium transition-colors">Home</a></li>
+                    <li><a href="docs.html" class="text-white font-medium border-b-2 border-primary pb-1">API Docs</a></li>
+                    <li><a href="index.html#stations" class="text-slate-400 hover:text-white font-medium transition-colors">Stations</a></li>
+                    <li><a href="https://github.com/Shubhamnpk/yoradio-api" target="_blank" class="text-slate-400 hover:text-white font-medium transition-colors">GitHub</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
+        
+        <!-- Hero -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">
+                API Documentation
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                Complete reference for integrating Nepal's radio station data into your applications.
+            </p>
+        </div>
+
+        <!-- Quick Start -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-white">Quick Start</h2>
+            <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8">
+                <p class="text-slate-400 mb-6">
+                    All data is available as static JSON files. No API keys required. Simply fetch the data directly:
+                </p>
+                <div class="code-block rounded-xl p-6 overflow-x-auto">
+                    <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-slate-500">// Fetch all stations</span>
+<span class="text-purple-400">fetch</span>(<span class="text-green-400">'https://shubhamnpk.github.io/yoradio-api/data/index.json'</span>)
+  .<span class="text-yellow-400">then</span>(res => res.<span class="text-yellow-400">json</span>())
+  .<span class="text-yellow-400">then</span>(stations => <span class="text-blue-400">console</span>.<span class="text-yellow-400">log</span>(stations));</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Endpoints -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-white">Data Endpoints</h2>
+            
+            <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden">
+                <div class="flex border-b border-white/10">
+                    <button class="endpoint-tab px-6 py-4 text-white font-medium border-b-2 border-green-500 bg-white/5" data-endpoint="all">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            All Stations
+                        </span>
+                    </button>
+                    <button class="endpoint-tab px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-endpoint="active">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Active Only
+                        </span>
+                    </button>
+                    <button class="endpoint-tab px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-endpoint="old">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            Invalid/Old
+                        </span>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <!-- All Stations -->
+                    <div id="all" class="endpoint-content">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono font-semibold">JSON</span>
+                            <code class="text-slate-300 font-mono">/data/index.json</code>
+                        </div>
+                        <p class="text-slate-400 mb-4">Complete database of all radio stations (400+ stations).</p>
+                        
+                        <h4 class="text-white font-semibold mb-3">Response Schema</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto mb-6">
+                            <pre class="font-mono text-sm"><code class="text-slate-300">[
+  {
+    <span class="text-accent">"id"</span>: <span class="text-green-400">"radio-kantipur-96.1"</span>,
+    <span class="text-accent">"name"</span>: <span class="text-green-400">"Radio Kantipur"</span>,
+    <span class="text-accent">"streamUrl"</span>: <span class="text-green-400">"https://radio-broadcast.ekantipur.com/stream"</span>,
+    <span class="text-accent">"frequency"</span>: <span class="text-yellow-400">96.1</span>,
+    <span class="text-accent">"address"</span>: <span class="text-green-400">"Subidhanagar, Tinkune, Kathmandu"</span>,
+    <span class="text-accent">"province"</span>: <span class="text-yellow-400">3</span>,
+    <span class="text-accent">"status"</span>: <span class="text-green-400">"active"</span>
+  }
+]</code></pre>
+                        </div>
+
+                        <h4 class="text-white font-semibold mb-3">Fields</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-white/10">
+                                        <th class="pb-3 text-slate-400 font-medium">Field</th>
+                                        <th class="pb-3 text-slate-400 font-medium">Type</th>
+                                        <th class="pb-3 text-slate-400 font-medium">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300">
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">id</td>
+                                        <td class="py-3">string</td>
+                                        <td class="py-3">Unique identifier for the station</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">name</td>
+                                        <td class="py-3">string</td>
+                                        <td class="py-3">Station name</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">streamUrl</td>
+                                        <td class="py-3">string</td>
+                                        <td class="py-3">Direct streaming URL</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">frequency</td>
+                                        <td class="py-3">number | null</td>
+                                        <td class="py-3">FM frequency in MHz</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">address</td>
+                                        <td class="py-3">string</td>
+                                        <td class="py-3">Station location/address</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-3 font-mono text-accent">province</td>
+                                        <td class="py-3">number</td>
+                                        <td class="py-3">Province code (1-7)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 font-mono text-accent">status</td>
+                                        <td class="py-3">string</td>
+                                        <td class="py-3">active | inactive</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Active Stations -->
+                    <div id="active" class="endpoint-content hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono font-semibold">JSON</span>
+                            <code class="text-slate-300 font-mono">/data/active.json</code>
+                        </div>
+                        <p class="text-slate-400 mb-4">Only verified active stations with working stream URLs. Use this for production apps.</p>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-slate-500">// Same schema as index.json, filtered for active stations only</span>
+<span class="text-purple-400">fetch</span>(<span class="text-green-400">'data/active.json'</span>)
+  .<span class="text-yellow-400">then</span>(res => res.<span class="text-yellow-400">json</span>())
+  .<span class="text-yellow-400">then</span>(stations => {
+    <span class="text-slate-500">// All stations here have verified working streams</span>
+  });</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Invalid/Old Stations -->
+                    <div id="old" class="endpoint-content hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-mono font-semibold">JSON</span>
+                            <code class="text-slate-300 font-mono">/data/old.json</code>
+                        </div>
+                        <p class="text-slate-400 mb-4">Stations with broken or invalid stream URLs. Includes validation error details.</p>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto">
+                            <pre class="font-mono text-sm"><code class="text-slate-300">{
+  <span class="text-accent">"id"</span>: <span class="text-green-400">"old-station"</span>,
+  <span class="text-accent">"name"</span>: <span class="text-green-400">"Old Radio"</span>,
+  <span class="text-accent">"streamUrl"</span>: <span class="text-green-400">"https://dead-url.com/stream"</span>,
+  <span class="text-accent">"_validation"</span>: {
+    <span class="text-accent">"valid"</span>: <span class="text-purple-400">false</span>,
+    <span class="text-accent">"message"</span>: <span class="text-green-400">"HTTP 404 - Not Found"</span>,
+    <span class="text-accent">"checked_at"</span>: <span class="text-green-400">"2024-01-15 10:30:00 UTC"</span>
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Province Codes -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-white">Province Codes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">1</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Koshi Province</h4>
+                            <p class="text-sm text-slate-400">Eastern Nepal</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">2</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Madhesh Province</h4>
+                            <p class="text-sm text-slate-400">Terai Region</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">3</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Bagmati Province</h4>
+                            <p class="text-sm text-slate-400">Kathmandu Valley</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">4</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Gandaki Province</h4>
+                            <p class="text-sm text-slate-400">Western Central</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">5</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Lumbini Province</h4>
+                            <p class="text-sm text-slate-400">Birthplace of Buddha</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">6</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Karnali Province</h4>
+                            <p class="text-sm text-slate-400">Remote Western</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6 md:col-span-2 lg:col-span-1">
+                    <div class="flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 flex items-center justify-center text-xl font-bold text-primary">7</span>
+                        <div>
+                            <h4 class="text-white font-semibold">Sudurpashchim</h4>
+                            <p class="text-sm text-slate-400">Far Western</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Examples -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-white">Code Examples</h2>
+            
+            <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden">
+                <div class="flex border-b border-white/10">
+                    <button class="tab-btn px-6 py-4 text-white font-medium border-b-2 border-primary bg-white/5" data-tab="js">JavaScript</button>
+                    <button class="tab-btn px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-tab="python">Python</button>
+                    <button class="tab-btn px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-tab="react">React</button>
+                </div>
+                <div class="p-6">
+                    <!-- JavaScript -->
+                    <div id="js" class="tab-content">
+                        <h4 class="text-white font-semibold mb-3">Filter by Province</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto mb-6">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-purple-400">async function</span> <span class="text-yellow-400">getBagmatiStations</span>() {
+  <span class="text-purple-400">const</span> <span class="text-blue-400">response</span> = <span class="text-purple-400">await</span> <span class="text-yellow-400">fetch</span>(<span class="text-green-400">'data/index.json'</span>);
+  <span class="text-purple-400">const</span> <span class="text-blue-400">stations</span> = <span class="text-purple-400">await</span> <span class="text-blue-400">response</span>.<span class="text-yellow-400">json</span>();
+  
+  <span class="text-purple-400">return</span> <span class="text-blue-400">stations</span>.<span class="text-yellow-400">filter</span>(station => station.<span class="text-accent">province</span> === <span class="text-yellow-400">3</span>);
+}</code></pre>
+                        </div>
+
+                        <h4 class="text-white font-semibold mb-3">Search Stations</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-purple-400">function</span> <span class="text-yellow-400">searchStations</span>(stations, query) {
+  <span class="text-purple-400">const</span> <span class="text-blue-400">lowerQuery</span> = query.<span class="text-yellow-400">toLowerCase</span>();
+  <span class="text-purple-400">return</span> <span class="text-blue-400">stations</span>.<span class="text-yellow-400">filter</span>(station => 
+    station.<span class="text-accent">name</span>.<span class="text-yellow-400">toLowerCase</span>().<span class="text-yellow-400">includes</span>(<span class="text-blue-400">lowerQuery</span>) ||
+    (station.<span class="text-accent">address</span> && station.<span class="text-accent">address</span>.<span class="text-yellow-400">toLowerCase</span>().<span class="text-yellow-400">includes</span>(<span class="text-blue-400">lowerQuery</span>))
+  );
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Python -->
+                    <div id="python" class="tab-content hidden">
+                        <h4 class="text-white font-semibold mb-3">Load and Filter Data</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto mb-6">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-purple-400">import</span> json
+<span class="text-purple-400">import</span> urllib.request
+
+<span class="text-purple-400">def</span> <span class="text-yellow-400">get_stations_by_province</span>(province_code):
+    <span class="text-purple-400">with</span> urllib.request.<span class="text-yellow-400">urlopen</span>(<span class="text-green-400">'data/index.json'</span>) <span class="text-purple-400">as</span> <span class="text-blue-400">response</span>:
+        <span class="text-blue-400">stations</span> = json.<span class="text-yellow-400">load</span>(<span class="text-blue-400">response</span>)
+    
+    <span class="text-purple-400">return</span> [s <span class="text-purple-400">for</span> s <span class="text-purple-400">in</span> <span class="text-blue-400">stations</span> <span class="text-purple-400">if</span> s[<span class="text-green-400">'province'</span>] == province_code]
+
+<span class="text-slate-500"># Get all Bagmati stations</span>
+<span class="text-blue-400">bagmati</span> = <span class="text-yellow-400">get_stations_by_province</span>(<span class="text-yellow-400">3</span>)
+<span class="text-yellow-400">print</span>(<span class="text-green-400">f"Found {len(bagmati)} stations in Bagmati"</span>)</code></pre>
+                        </div>
+
+                        <h4 class="text-white font-semibold mb-3">Play Radio Stream</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-purple-400">import</span> vlc
+
+<span class="text-purple-400">def</span> <span class="text-yellow-400">play_station</span>(stream_url):
+    <span class="text-blue-400">player</span> = vlc.<span class="text-yellow-400">MediaPlayer</span>(<span class="text-blue-400">stream_url</span>)
+    <span class="text-blue-400">player</span>.<span class="text-yellow-400">play</span>()
+    <span class="text-purple-400">return</span> <span class="text-blue-400">player</span>
+
+<span class="text-slate-500"># Play Radio Kantipur</span>
+<span class="text-blue-400">player</span> = <span class="text-yellow-400">play_station</span>(<span class="text-green-400">'https://radio-broadcast.ekantipur.com/stream'</span>)</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- React -->
+                    <div id="react" class="tab-content hidden">
+                        <h4 class="text-white font-semibold mb-3">Custom Hook</h4>
+                        <div class="code-block rounded-xl p-4 overflow-x-auto">
+                            <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-purple-400">import</span> { useState, useEffect } <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
+
+<span class="text-purple-400">function</span> <span class="text-yellow-400">useRadioStations</span>() {
+  <span class="text-purple-400">const</span> [<span class="text-blue-400">stations</span>, <span class="text-yellow-400">setStations</span>] = <span class="text-yellow-400">useState</span>([]);
+  <span class="text-purple-400">const</span> [<span class="text-blue-400">loading</span>, <span class="text-yellow-400">setLoading</span>] = <span class="text-yellow-400">useState</span>(<span class="text-purple-400">true</span>);
+
+  <span class="text-yellow-400">useEffect</span>(() => {
+    <span class="text-yellow-400">fetch</span>(<span class="text-green-400">'data/index.json'</span>)
+      .<span class="text-yellow-400">then</span>(res => res.<span class="text-yellow-400">json</span>())
+      .<span class="text-yellow-400">then</span>(data => {
+        <span class="text-yellow-400">setStations</span>(<span class="text-blue-400">data</span>);
+        <span class="text-yellow-400">setLoading</span>(<span class="text-purple-400">false</span>);
+      });
+  }, []);
+
+  <span class="text-purple-400">return</span> { <span class="text-blue-400">stations</span>, <span class="text-blue-400">loading</span> };
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Back to Home -->
+        <div class="text-center">
+            <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-white/[0.03] to-white/[0.01] border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-slate-500">
+                © 2024 Yo Radio API. Built with ❤️ for Nepal's radio community.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Code examples tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('border-primary', 'bg-white/5', 'text-white');
+                    b.classList.add('border-transparent', 'text-slate-400');
+                });
+                btn.classList.remove('border-transparent', 'text-slate-400');
+                btn.classList.add('border-primary', 'bg-white/5', 'text-white');
+                
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // Endpoint tab switching
+        document.querySelectorAll('.endpoint-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Reset all tabs
+                document.querySelectorAll('.endpoint-tab').forEach(b => {
+                    b.classList.remove('border-green-500', 'border-blue-500', 'border-red-500', 'bg-white/5', 'text-white');
+                    b.classList.add('border-transparent', 'text-slate-400');
+                });
+                
+                // Activate clicked tab with appropriate color
+                const endpoint = btn.dataset.endpoint;
+                btn.classList.remove('border-transparent', 'text-slate-400');
+                btn.classList.add('bg-white/5', 'text-white');
+                if (endpoint === 'all') btn.classList.add('border-green-500');
+                else if (endpoint === 'active') btn.classList.add('border-blue-500');
+                else if (endpoint === 'old') btn.classList.add('border-red-500');
+                
+                // Show corresponding content
+                document.querySelectorAll('.endpoint-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(endpoint).classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
