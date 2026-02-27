@@ -1,176 +1,247 @@
-# Yo Radio API
+# 📻 Yo Radio API
 
-A comprehensive, open-source database of radio stations across Nepal. This API provides easy access to streaming URLs, frequencies, locations, and other details for over 4000+ radio stations from all 7 provinces.
+<p align="center">
+  <img src="images/radio-logo.svg" width="120" height="120" alt="Yo Radio Logo">
+</p>
 
-## Features
+<p align="center">
+  <strong>Nepal's Premier Radio Station Database</strong><br>
+  A comprehensive, open-source collection of 400+ radio stations from all 7 provinces of Nepal.
+</p>
 
-- 📡 **Live Streaming URLs**: Direct access to radio station streams
-- 📍 **Complete Station Data**: Name, frequency, address, province information
-- 🚀 **Easy Integration**: Simple JSON API endpoints
-- 🔄 **Regularly Updated**: Fresh data from across Nepal
-- 📱 **Mobile Friendly**: Responsive design for all devices
+<p align="center">
+  <a href="https://shubhamnpk.github.io/yoradio-api/">🌐 Live Demo</a> •
+  <a href="https://shubhamnpk.github.io/yoradio-api/docs.html">📚 API Docs</a> •
+  <a href="https://github.com/Shubhamnpk/yoradio">📱 YoRadio App</a>
+</p>
 
-## API Endpoints
+---
 
-### Get All Stations
+## ✨ Features
+
+- 📡 **400+ Radio Stations** - Complete coverage across all 7 provinces
+- 🔴 **Live Streaming** - Direct streaming URLs for web and apps
+- 🔍 **Smart Search** - Filter by province, name, or frequency
+- ✅ **Validated Streams** - Regularly checked for availability
+- 🎵 **Live Web Player** - Built-in player with pagination (12 per page)
+- 🆓 **100% Free** - No API keys, no limits, open source
+
+---
+
+## 🚀 Quick Start
+
+### Web Player
+Visit our [Live Radio Player](https://shubhamnpk.github.io/yoradio-api/#stations) to stream stations directly in your browser!
+
+### API Usage
+
+#### Get All Stations
 ```
-GET /data/index.json
+GET https://shubhamnpk.github.io/yoradio-api/data/index.json
 ```
-Returns the complete database of all radio stations.
 
-**Response Format:**
+#### Get Active Stations (Verified)
+```
+GET https://shubhamnpk.github.io/yoradio-api/data/active.json
+```
+
+#### Response Format
 ```json
 [
   {
-    "id": "unique-station-id",
-    "name": "Station Name",
-    "streamUrl": "https://stream.example.com/live",
+    "id": "radio-kantipur",
+    "name": "Radio Kantipur",
+    "streamUrl": "https://radio-broadcast.ekantipur.com/stream",
     "frequency": 96.1,
-    "address": "Station Address, City, Nepal",
+    "address": "Subidhanagar, Tinkune, Kathmandu",
     "province": 3
   }
 ]
 ```
 
-### Get Active Stations
-```
-GET /data/active.json
-```
-Returns a curated list of currently active and verified stations.
+---
 
-## Usage
+## 📊 Data Files
 
-### JavaScript Example
-```javascript
-// Fetch all stations
-fetch('/data/index.json')
-  .then(response => response.json())
-  .then(data => {
-    console.log('Total stations:', data.length);
-    // Process your data here
-  });
-
-// Fetch active stations
-fetch('/data/active.json')
-  .then(response => response.json())
-  .then(data => {
-    // Display active stations
-    data.forEach(station => {
-      console.log(`${station.name} - ${station.frequency} MHz`);
-    });
-  });
-```
-
-### HTML Audio Player Example
-```html
-<audio controls>
-  <source src="https://radio-broadcast.ekantipur.com/stream" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-```
-
-## Province Codes
-
-- 1: Province 1 (Eastern Nepal)
-- 2: Province 2 (Terai Region)
-- 3: Bagmati Province (Central Nepal)
-- 4: Gandaki Province
-- 5: Lumbini Province
-- 6: Karnali Province
-- 7: Sudurpashchim Province
-
-## Built With Yo Radio API
-
-Here are some amazing projects using this API:
-
-- [**Yoafsana Radio**](https://shubhamnpk.github.io/yoafsana-radio/) - A beautiful radio streaming web app
-- [**Yo Radio**](https://shubhamnpk.github.io/yoradio) - Full-featured radio platform
-- *Your project here!* - Contribute your creation
-
-## Contributing
-
-We welcome contributions! Please feel free to:
-
-1. Add new radio stations
-2. Update stream URLs
-3. Improve station information
-4. Enhance the documentation
-5. Report issues or suggest features
-
-### Adding New Stations
-
-1. Fork the repository
-2. Add station data to `data/index.json`
-3. Update `data/active.json` if it's a verified active station
-4. Submit a pull request
-
-**Station Data Format:**
-```json
-{
-  "id": "unique-id-string",
-  "name": "Station Name",
-  "streamUrl": "https://valid-stream-url.com/live",
-  "frequency": 96.1,
-  "address": "Complete address, City, Nepal",
-  "province": 3
-}
-```
-
-## Development
-
-### Running Locally
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Start the development server:
-```bash
-npm start
-```
-
-The server will run on `http://localhost:3000`
-
-### Validation
-
-Validate the JSON data files:
-```bash
-npm run validate
-```
-
-## Interactive Website Features
-
-The website includes:
-- **Live Station Browser**: Browse and search through all active radio stations
-- **Real-time Audio Player**: Click any station to start streaming instantly
-- **Smart Filtering**: Filter by province and search by station name/location
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
-- **Modern UI**: Clean, intuitive interface with smooth animations
-
-## Deployment
-
-This project uses GitHub Actions for automatic deployment to GitHub Pages:
-
-### Automatic Deployment
-- Push to `main` branch triggers automatic deployment
-- Data validation runs before each deployment
-- Available at: `https://[username].github.io/yoradio-api/`
-
-### Manual Deployment Options
-Can also be deployed to:
-- Netlify
-- Vercel
-- Any static hosting service
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For questions, issues, or contributions, please open an issue on GitHub.
+| File | Description | Stations |
+|------|-------------|----------|
+| `data/index.json` | All stations (HTTPS only, web-compatible) | ~350+ |
+| `data/active.json` | Verified working stations | ~350+ |
+| `data/old.json` | HTTP streams (app-only) or broken | ~50+ |
 
 ---
 
-**Made with ❤️ for Nepal's radio community**
+## 💻 Code Examples
+
+### JavaScript
+```javascript
+// Fetch and filter stations
+const response = await fetch('https://shubhamnpk.github.io/yoradio-api/data/index.json');
+const stations = await response.json();
+
+// Filter by province
+const bagmati = stations.filter(s => s.province === 3);
+
+// Search by name
+const kantipur = stations.find(s => s.name.includes('Kantipur'));
+```
+
+### Python
+```python
+import json
+import urllib.request
+
+with urllib.request.urlopen('https://shubhamnpk.github.io/yoradio-api/data/index.json') as response:
+    stations = json.load(response)
+
+# Filter by province
+bagmati_stations = [s for s in stations if s['province'] == 3]
+print(f"Found {len(bagmati_stations)} stations in Bagmati")
+```
+
+### React Hook
+```javascript
+function useRadioStations() {
+  const [stations, setStations] = useState([]);
+  
+  useEffect(() => {
+    fetch('https://shubhamnpk.github.io/yoradio-api/data/index.json')
+      .then(res => res.json())
+      .then(setStations);
+  }, []);
+  
+  return stations;
+}
+```
+
+---
+
+## 🗺️ Province Codes
+
+| Code | Province | Region |
+|------|----------|--------|
+| 1 | Koshi | Eastern Nepal |
+| 2 | Madhesh | Terai Region |
+| 3 | Bagmati | Kathmandu Valley |
+| 4 | Gandaki | Western Central |
+| 5 | Lumbini | Birthplace of Buddha |
+| 6 | Karnali | Remote Western |
+| 7 | Sudurpashchim | Far Western |
+
+---
+
+## 🛠️ Local Development
+
+### Running Locally
+
+```bash
+# Clone the repository
+git clone https://github.com/Shubhamnpk/yoradio-api.git
+cd yoradio-api
+
+# Install dependencies
+npm install
+
+# Start the server
+node server.js
+
+# Open http://localhost:3000
+```
+
+### Features Available Locally
+- ✅ Web player with pagination
+- ✅ Proxy for HTTP streams (converts to HTTPS)
+- ✅ All API endpoints
+
+### Validation Scripts
+
+```bash
+# Basic validation
+python validate_urls.py
+
+# Advanced validation with FFmpeg
+python validate_advanced.py
+
+# Move HTTP streams to old.json
+python move_http_to_old.py
+```
+
+---
+
+## 📱 Apps Using This API
+
+| App | Description | Link |
+|-----|-------------|------|
+| **YoRadio** | Official desktop/mobile radio app | [GitHub](https://github.com/Shubhamnpk/yoradio) |
+| **YoRadio Web** | Web player with live streaming | [Try it](https://shubhamnpk.github.io/yoradio-api/) |
+| **Your App** | Submit your project! | [Contribute](#contributing) |
+
+> This database was originally created for YoRadio, but it's **free for everyone** to use!
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! You can:
+
+1. 🎵 **Add new stations** - Find missing radio stations
+2. 🔧 **Update URLs** - Fix broken stream links
+3. 🐛 **Report issues** - Use the "Report Broken" button in the web player
+4. 💻 **Submit apps** - Add your project to the showcase
+5. 📝 **Improve docs** - Help us document better
+
+### Report Broken Streams
+Click the ⚠️ button in the web player when a stream fails, or [open an issue](https://github.com/Shubhamnpk/yoradio-api/issues/new).
+
+---
+
+## 📁 Project Structure
+
+```
+yoradio-api/
+├── 📄 index.html          # Main web player (Tailwind CSS)
+├── 📄 docs.html           # API documentation
+├── 📁 data/
+│   ├── index.json         # All stations (HTTPS)
+│   ├── active.json        # Verified stations
+│   └── old.json           # HTTP/broken stations
+├── 📁 images/
+│   └── radio-logo.svg     # Logo & favicon
+├── 📄 server.js           # Node.js server with proxy
+├── 📄 validate_urls.py    # Basic URL validation
+├── 📄 validate_advanced.py # Advanced validation (FFmpeg)
+└── 📄 README.md           # This file
+```
+
+---
+
+## ⚠️ Known Issues
+
+### Browser Compatibility
+- **HTTP streams** are blocked by modern browsers (mixed content policy)
+- These have been moved to `data/old.json`
+- They still work in the YoRadio desktop/mobile app
+- For local development, use the `/proxy` endpoint
+
+### Geo-Restrictions
+Some stations only work from within Nepal due to licensing restrictions.
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 🙏 Credits
+
+- **Data Source**: Various radio stations across Nepal
+- **Maintainer**: [@Shubhamnpk](https://github.com/Shubhamnpk)
+- **Created for**: [YoRadio](https://github.com/Shubhamnpk/yoradio)
+
+---
+
+<p align="center">
+  Made with ❤️ for Nepal's radio community
+</p>
