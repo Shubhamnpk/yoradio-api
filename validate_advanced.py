@@ -67,38 +67,82 @@ def check_stream_with_ffmpeg(url: str, timeout: int = 10) -> tuple:
 def check_stream_http(url: str, timeout: int = 10) -> tuple:
     """
     Check stream using HTTP headers (fallback method).
+    Tries multiple user agents and headers.
     """
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    # Try different user agents and headers
+    attempts = [
+        {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': '*/*',
+            'Accept-Encoding': 'identity;q=1, *;q=0',
+            'Icy-MetaData': '1',
+            'Referer': 'https://yoradio.app/',
+        },
+        {
+            'User-Agent': 'VLC/3.0.18 LibVLC/3.0.18',
             'Accept': '*/*',
             'Icy-MetaData': '1',
+        },
+        {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+            'Accept': 'audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5',
+            'Icy-MetaData': '1',
         }
-        
-        req = Request(url, headers=headers, method='HEAD')
-        response = urlopen(req, timeout=timeout, context=ssl_context)
-        
-        # Get content type
-        content_type = response.headers.get('Content-Type', '').lower()
-        
-        # Check if it's an audio stream
-        audio_types = ['audio/', 'application/ogg', 'application/octet-stream']
-        is_audio = any(t in content_type for t in audio_types)
-        
-        # Check for ICY (Icecast/Shoutcast) headers
-        has_icy = any(k.startswith('icy-') for k in response.headers.keys())
-        
-        if is_audio or has_icy:
-            return True, f"Audio stream detected ({content_type})"
-        else:
-            return False, f"Not an audio stream ({content_type})"
+    ]
+    
+    last_error = ""
+    
+    for headers in attempts:
+        try:
+            req = Request(url, headers=headers, method='HEAD')
+            response = urlopen(req, timeout=timeout, context=ssl_context)
             
-    except HTTPError as e:
-        return False, f"HTTP {e.code}: {e.reason}"
-    except URLError as e:
-        return False, f"URL Error: {str(e.reason)}"
-    except Exception as e:
-        return False, f"Error: {str(e)}"
+            # Get content type
+            content_type = response.headers.get('Content-Type', '').lower()
+            
+            # Check if it's an audio stream
+            audio_types = ['audio/', 'application/ogg', 'application/octet-stream', 'binary/octet-stream']
+            is_audio = any(t in content_type for t in audio_types)
+            
+            # Check for ICY (Icecast/Shoutcast) headers
+            has_icy = any(k.startswith('icy-') for k in response.headers.keys())
+            
+            # Check content length (some streams report 0 but still work)
+            content_length = response.headers.get('Content-Length')
+            
+            # Some stations return 200 but with html content (login pages, etc)
+            if 'text/html' in content_type:
+                last_error = f"HTML page returned (not stream)"
+                continue
+            
+            if is_audio or has_icy:
+                return True, f"Audio stream OK ({content_type[:30]})"
+            elif not content_type:
+                # No content type but request succeeded - might be stream
+                return True, "Stream detected (no content-type)"
+            else:
+                last_error = f"Not audio ({content_type})"
+                
+        except HTTPError as e:
+            if e.code == 405:  # Method not allowed, try GET
+                try:
+                    req = Request(url, headers=headers, method='GET')
+                    response = urlopen(req, timeout=timeout, context=ssl_context)
+                    return True, f"Stream OK (GET method)"
+                except:
+                    last_error = f"HTTP {e.code}: {e.reason}"
+            elif e.code == 403:
+                last_error = f"HTTP 403 Forbidden - may need referer header"
+            elif e.code == 404:
+                return False, f"HTTP 404 - Stream not found"
+            else:
+                last_error = f"HTTP {e.code}: {e.reason}"
+        except URLError as e:
+            last_error = f"URL Error: {str(e.reason)}"
+        except Exception as e:
+            last_error = f"Error: {str(e)[:50]}"
+    
+    return False, last_error if last_error else "Failed all connection attempts"
 
 def validate_station(station: dict) -> tuple:
     """Validate a single station."""

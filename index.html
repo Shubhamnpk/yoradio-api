@@ -292,6 +292,12 @@
         <!-- Live Player & Stations -->
         <section id="stations" class="mb-24">
             <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm font-semibold mb-6">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    <span id="stationCountBadge">Loading stations...</span>
+                </div>
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">Live Radio Player</h2>
                 <p class="text-xl text-slate-400">Listen to stations directly in your browser</p>
             </div>
@@ -378,6 +384,13 @@
                             </svg>
                             <svg id="playIconBtn" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Report Broken Button (hidden by default, shown on error) -->
+                        <button id="reportBrokenBtn" class="hidden p-2 hover:bg-red-500/20 rounded-lg transition-colors" title="Report broken stream">
+                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                             </svg>
                         </button>
                         
@@ -707,6 +720,12 @@
                     oldStations = [];
                 }
                 
+                // Update station count badge
+                const totalStations = allStations.length;
+                const activeStations = allStations.filter(s => !s._validation || s._validation.valid).length;
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `${totalStations} Stations Available (${activeStations} Active)`;
+                
                 filteredStations = getDisplayedStations();
                 currentPage = 1;
                 renderStationsPage();
@@ -868,7 +887,16 @@
             } else {
                 // Play new station
                 currentStation = id;
-                player.src = url;
+                
+                // Use proxy for HTTP streams when running on localhost
+                // This bypasses browser mixed-content restrictions
+                let streamUrl = url;
+                if (window.location.hostname === 'localhost' && url.startsWith('http://')) {
+                    streamUrl = `/proxy?url=${encodeURIComponent(url)}`;
+                    console.log('Using proxy for HTTP stream:', streamUrl);
+                }
+                
+                player.src = streamUrl;
                 player.volume = document.getElementById('volumeSlider').value / 100;
                 player.play();
                 isPlaying = true;
@@ -963,6 +991,9 @@
             updatePlayPauseButton();
             document.getElementById('visualizer').classList.remove('opacity-0');
             document.getElementById('playIcon').classList.add('opacity-0');
+            document.getElementById('statusText').textContent = 'Live Stream';
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+            document.getElementById('reportBrokenBtn').classList.add('hidden');
         });
 
         document.getElementById('player').addEventListener('pause', () => {
@@ -970,6 +1001,57 @@
             updatePlayPauseButton();
             document.getElementById('visualizer').classList.add('opacity-0');
             document.getElementById('playIcon').classList.remove('opacity-0');
+        });
+
+        document.getElementById('player').addEventListener('error', (e) => {
+            const error = e.target.error;
+            let errorMessage = 'Stream error';
+            
+            if (error) {
+                switch (error.code) {
+                    case error.MEDIA_ERR_NETWORK:
+                        errorMessage = 'Network error - stream unreachable';
+                        break;
+                    case error.MEDIA_ERR_DECODE:
+                        errorMessage = 'Format error - incompatible stream';
+                        break;
+                    case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                        errorMessage = 'Source not supported or geo-blocked';
+                        break;
+                    default:
+                        errorMessage = 'Failed to play stream';
+                }
+            }
+            
+            document.getElementById('statusText').textContent = errorMessage;
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-red-500';
+            document.getElementById('visualizer').classList.add('opacity-0');
+            document.getElementById('playIcon').classList.remove('opacity-0');
+            
+            // Show report button on error
+            document.getElementById('reportBrokenBtn').classList.remove('hidden');
+        });
+
+        // Report broken stream
+        document.getElementById('reportBrokenBtn').addEventListener('click', () => {
+            const stationName = document.getElementById('nowPlaying').textContent;
+            const issueTitle = encodeURIComponent(`Broken Stream: ${stationName}`);
+            const issueBody = encodeURIComponent(
+                `**Station:** ${stationName}\n` +
+                `**Error:** ${document.getElementById('statusText').textContent}\n` +
+                `**Time:** ${new Date().toISOString()}\n\n` +
+                `Please verify and move this station to old.json if confirmed broken.`
+            );
+            
+            window.open(
+                `https://github.com/Shubhamnpk/yoradio-api/issues/new?title=${issueTitle}&body=${issueBody}`,
+                '_blank'
+            );
+        });
+
+        document.getElementById('player').addEventListener('waiting', () => {
+            document.getElementById('statusText').textContent = 'Buffering...';
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
         });
 
         document.getElementById('closePlayer').addEventListener('click', () => {
@@ -994,6 +1076,18 @@
                 const matchesProvince = !province || station.province === parseInt(province);
                 return matchesSearch && matchesProvince;
             });
+            
+            // Update badge with filtered count
+            const totalShown = filteredStations.length;
+            const originalTotal = allStations.length;
+            if (totalShown !== originalTotal) {
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `Showing ${totalShown} of ${originalTotal} Stations`;
+            } else {
+                const activeStations = allStations.filter(s => !s._validation || s._validation.valid).length;
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `${originalTotal} Stations Available (${activeStations} Active)`;
+            }
             
             // Reset to page 1 when filtering
             currentPage = 1;
