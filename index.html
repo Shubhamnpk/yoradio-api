@@ -702,18 +702,23 @@
         let currentStation = null;
         let showOldStations = false;
         let currentPage = 1;
+        // Dynamic base path detection for GitHub Pages subdirectory deployment
+        const basePath = window.location.pathname.includes('/yoradio-api/') 
+            ? '/yoradio-api' 
+            : '';
+
         const itemsPerPage = 12;
         let filteredStations = [];
 
         async function loadStations() {
             try {
-                // Load main stations
-                const response = await fetch('data/index.json');
+                // Load main stations with dynamic base path
+                const response = await fetch(`${basePath}/data/index.json`);
                 allStations = await response.json();
                 
                 // Also load old/invalid stations
                 try {
-                    const oldResponse = await fetch('data/old.json');
+                    const oldResponse = await fetch(`${basePath}/data/old.json`);
                     oldStations = await oldResponse.json();
                 } catch (e) {
                     console.log('No old stations file found');
