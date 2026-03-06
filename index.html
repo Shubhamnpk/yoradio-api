@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo Radio API - Nepal's Premier Radio Station Database</title>
+    <link rel="icon" type="image/svg+xml" href="images/radio-logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        'primary-dark': '#4f46e5',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                        dark: '#0f172a',
+                        'dark-light': '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 30s linear infinite',
+                        'spin-slower': 'spin 40s linear infinite reverse',
+                        'fade-in-up': 'fadeInUp 0.8s ease forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles that Tailwind doesn't cover */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+            opacity: 0.05;
+            animation: rotate 30s linear infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            bottom: -50%;
+            right: -50%;
+            background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+            opacity: 0.03;
+            animation: rotate 40s linear infinite reverse;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Gradient text utility */
+        .text-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 5px;
+        }
+
+        /* Audio player custom styles */
+        audio::-webkit-media-controls-panel {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* Station card hover glow */
+        .station-card {
+            transition: all 0.3s ease;
+        }
+
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .station-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .station-card:hover::before {
+            transform: translateX(0);
+        }
+
+        /* Playing animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .playing-indicator::before,
+        .playing-indicator::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        .playing-indicator::after {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+<body class="bg-dark text-white font-sans leading-relaxed overflow-x-hidden">
+    <!-- Background Animation -->
+    <div class="bg-animation"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-dark/80 backdrop-blur-xl border-b border-white/10 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="images/radio-logo.svg" alt="Yo Radio Logo" class="w-10 h-10 flex-shrink-0">
+                <span class="text-2xl font-bold text-gradient">Yo Radio API</span>
+            </div>
+            <nav class="hidden md:flex">
+                <ul class="flex gap-8 list-none">
+                    <li><a href="#home" class="text-slate-400 hover:text-white font-medium transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-primary after:to-secondary after:transition-all after:duration-300 hover:after:w-full">Home</a></li>
+                    <li><a href="#api" class="text-slate-400 hover:text-white font-medium transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-primary after:to-secondary after:transition-all after:duration-300 hover:after:w-full">API Docs</a></li>
+                    <li><a href="#stations" class="text-slate-400 hover:text-white font-medium transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-primary after:to-secondary after:transition-all after:duration-300 hover:after:w-full">Stations</a></li>
+                    <li><a href="#examples" class="text-slate-400 hover:text-white font-medium transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-5px] after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-primary after:to-secondary after:transition-all after:duration-300 hover:after:w-full">Examples</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+        
+        <!-- Hero Section -->
+        <section id="home" class="text-center py-24 mb-16 relative">
+            <div class="inline-block px-4 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm font-semibold mb-8 animate-fade-in-up">
+                🚀 400+ Radio Stations Available
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent animate-fade-in-up" style="animation-delay: 0.2s">
+                Stream Nepal's Radio Universe
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.4s">
+                Access the most comprehensive collection of Nepali radio stations through our modern, developer-friendly API.
+            </p>
+            <div class="flex gap-4 justify-center flex-wrap animate-fade-in-up" style="animation-delay: 0.6s">
+                <a href="#api" class="group inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30">
+                    <span>Explore API</span>
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </a>
+                <a href="#stations" class="inline-flex items-center px-8 py-4 border-2 border-white/20 rounded-xl font-semibold text-white hover:bg-white/5 hover:border-white/30 transition-all duration-300">
+                    Browse Stations
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">⚡</div>
+                <h3 class="text-xl font-bold mb-2 text-white">Lightning Fast</h3>
+                <p class="text-slate-400">Optimized responses with edge caching for sub-100ms response times worldwide.</p>
+            </div>
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">📻</div>
+                <h3 class="text-xl font-bold mb-2 text-white">400+ Stations</h3>
+                <p class="text-slate-400">Comprehensive coverage of FM, AM, and online radio stations from all 7 provinces.</p>
+            </div>
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">🔍</div>
+                <h3 class="text-xl font-bold mb-2 text-white">Smart Search</h3>
+                <p class="text-slate-400">Filter by province, frequency, genre, or search by station name with fuzzy matching.</p>
+            </div>
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">🎯</div>
+                <h3 class="text-xl font-bold mb-2 text-white">Always Updated</h3>
+                <p class="text-slate-400">Automated validation ensures stream URLs are active and working 24/7.</p>
+            </div>
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">📱</div>
+                <h3 class="text-xl font-bold mb-2 text-white">Cross Platform</h3>
+                <p class="text-slate-400">JSON responses work seamlessly with web, mobile, and desktop applications.</p>
+            </div>
+            <div class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:from-white/10 hover:to-white/[0.04]">
+                <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                <div class="text-4xl mb-4 text-gradient">🆓</div>
+                <h3 class="text-xl font-bold mb-2 text-white">Free Forever</h3>
+                <p class="text-slate-400">No API keys, no rate limits, no attribution required. Open source and community driven.</p>
+            </div>
+        </section>
+
+        <!-- Simple API Preview Section -->
+        <section id="api" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">Simple API</h2>
+                <p class="text-xl text-slate-400 mb-6">No API keys. No rate limits. Just JSON.</p>
+                <a href="docs.html" class="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors font-medium">
+                    View Full Documentation
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-green-500/20 to-green-600/20 flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">📊</span>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">All Stations</h3>
+                        <code class="text-sm text-slate-400 bg-dark/50 px-3 py-1 rounded">/data/index.json</code>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-500/20 to-blue-600/20 flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">✅</span>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">Active Only</h3>
+                        <code class="text-sm text-slate-400 bg-dark/50 px-3 py-1 rounded">/data/active.json</code>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-r from-red-500/20 to-red-600/20 flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">⚠️</span>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">Invalid/Old</h3>
+                        <code class="text-sm text-slate-400 bg-dark/50 px-3 py-1 rounded">/data/old.json</code>
+                    </div>
+                </div>
+
+                <div class="bg-dark/50 rounded-xl p-6 overflow-x-auto">
+                    <div class="text-slate-500 text-sm mb-3">// Quick Example</div>
+                    <pre class="font-mono text-sm"><code class="text-slate-300"><span class="text-slate-500">// Fetch all stations</span>
+<span class="text-purple-400">fetch</span>(<span class="text-green-400">'data/index.json'</span>)
+  .<span class="text-yellow-400">then</span>(res => res.<span class="text-yellow-400">json</span>())
+  .<span class="text-yellow-400">then</span>(stations => <span class="text-blue-400">console</span>.<span class="text-yellow-400">log</span>(<span class="text-green-400">`Found ${stations.length} stations`</span>));</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Player & Stations -->
+        <section id="stations" class="mb-24">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary text-sm font-semibold mb-6">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    <span id="stationCountBadge">Loading stations...</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">Live Radio Player</h2>
+                <p class="text-xl text-slate-400">Listen to stations directly in your browser</p>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="relative flex-1">
+                    <input type="text" id="searchInput" placeholder="Search stations..." 
+                           class="w-full bg-dark-light/50 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-slate-500 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all">
+                    <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <select id="provinceFilter" class="bg-dark-light/50 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer">
+                    <option value="">All Provinces</option>
+                    <option value="1">Koshi Province</option>
+                    <option value="2">Madhesh Province</option>
+                    <option value="3">Bagmati Province</option>
+                    <option value="4">Gandaki Province</option>
+                    <option value="5">Lumbini Province</option>
+                    <option value="6">Karnali Province</option>
+                    <option value="7">Sudurpashchim Province</option>
+                </select>
+            </div>
+
+            <!-- Show Invalid Stations Toggle -->
+            <div class="flex items-center justify-between bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚠️</span>
+                    <div>
+                        <h4 class="text-white font-medium">Show Invalid/Broken Stations</h4>
+                        <p class="text-sm text-slate-400">Display stations with broken stream URLs for reference</p>
+                    </div>
+                </div>
+                <button id="toggleOldStations" class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-slate-900">
+                    <span id="toggleOldStationsKnob" class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1"></span>
+                </button>
+            </div>
+
+            <!-- Old Stations Notice (hidden by default) -->
+            <div id="oldStationsNotice" class="hidden mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div>
+                        <h4 class="text-red-400 font-medium mb-1">Showing Invalid Stations</h4>
+                        <p class="text-slate-400 text-sm">These stations have broken or unreachable stream URLs. They are shown for reference only. Check <code class="bg-dark/50 px-2 py-0.5 rounded">data/old.json</code> for the complete list with error details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modern Audio Player -->
+            <div id="audioPlayer" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-2xl bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 z-50 shadow-2xl shadow-black/50">
+                <div class="flex items-center gap-4">
+                    <!-- Album Art / Visualizer -->
+                    <div class="relative w-14 h-14 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center flex-shrink-0 overflow-hidden group">
+                        <div id="visualizer" class="absolute inset-0 flex items-center justify-center gap-0.5 opacity-0 transition-opacity duration-300">
+                            <div class="w-1 bg-white/80 rounded-full animate-[bounce_1s_ease-in-out_infinite]" style="height: 40%;"></div>
+                            <div class="w-1 bg-white/80 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.1s]" style="height: 70%;"></div>
+                            <div class="w-1 bg-white/80 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.2s]" style="height: 50%;"></div>
+                            <div class="w-1 bg-white/80 rounded-full animate-[bounce_1s_ease-in-out_infinite_0.3s]" style="height: 80%;"></div>
+                        </div>
+                        <svg id="playIcon" class="w-7 h-7 text-white relative z-10 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Station Info -->
+                    <div class="flex-1 min-w-0">
+                        <div id="nowPlaying" class="font-semibold text-white truncate text-base">Select a station</div>
+                        <div class="flex items-center gap-2 text-sm text-slate-400">
+                            <span id="statusIndicator" class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span id="statusText">Live Stream</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="flex items-center gap-3">
+                        <!-- Play/Pause Button -->
+                        <button id="playPauseBtn" class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/30">
+                            <svg id="pauseIcon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                            <svg id="playIconBtn" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Report Broken Button (hidden by default, shown on error) -->
+                        <button id="reportBrokenBtn" class="hidden p-2 hover:bg-red-500/20 rounded-lg transition-colors" title="Report broken stream">
+                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Volume Control -->
+                        <div class="flex items-center gap-2 group/volume">
+                            <button id="muteBtn" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                <svg id="volumeHigh" class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                </svg>
+                                <svg id="volumeMute" class="w-5 h-5 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+                                </svg>
+                            </button>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="80" class="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-primary hover:accent-secondary transition-all">
+                        </div>
+                        
+                        <!-- Close Button -->
+                        <button id="closePlayer" class="p-2 hover:bg-white/10 rounded-lg transition-colors ml-2">
+                            <svg class="w-5 h-5 text-slate-400 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar (decorative for live stream) -->
+                <div class="mt-3 flex items-center gap-3">
+                    <span class="text-xs text-slate-500 font-mono">LIVE</span>
+                    <div class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div id="liveIndicator" class="h-full w-full bg-gradient-to-r from-primary via-secondary to-accent opacity-50"></div>
+                    </div>
+                    <span id="bitrate" class="text-xs text-slate-500 font-mono">-- kbps</span>
+                </div>
+                
+                <audio id="player" class="hidden"></audio>
+            </div>
+
+            <!-- Stations Grid -->
+            <div id="stationsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Stations will be loaded here -->
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-16">
+                <div class="inline-block w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                <p class="text-slate-400 mt-4">Loading stations...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16">
+                <div class="text-6xl mb-4">📻</div>
+                <h3 class="text-xl font-semibold mb-2">No stations found</h3>
+                <p class="text-slate-400">Try adjusting your search or filters</p>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="hidden mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-slate-400 text-sm">
+                    Showing <span id="showingStart">1</span>-<span id="showingEnd">12</span> of <span id="totalStations">0</span> stations
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="prevPage" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <div id="pageNumbers" class="flex items-center gap-1">
+                        <!-- Page numbers will be inserted here -->
+                    </div>
+                    <button id="nextPage" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Examples -->
+        <section id="examples" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">Code Examples</h2>
+                <p class="text-xl text-slate-400">Get started in seconds</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl overflow-hidden">
+                <div class="flex border-b border-white/10">
+                    <button class="tab-btn px-6 py-4 text-white font-medium border-b-2 border-primary bg-white/5" data-tab="javascript">JavaScript</button>
+                    <button class="tab-btn px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-tab="python">Python</button>
+                    <button class="tab-btn px-6 py-4 text-slate-400 font-medium border-b-2 border-transparent hover:text-white transition-colors" data-tab="curl">cURL</button>
+                </div>
+                <div class="p-6">
+                    <div id="javascript" class="tab-content">
+                        <pre class="font-mono text-sm text-slate-300 overflow-x-auto"><code><span class="text-slate-500">// Fetch all stations from the JSON data</span>
+<span class="text-purple-400">async function</span> <span class="text-yellow-400">getStations</span>() {
+  <span class="text-purple-400">const</span> <span class="text-blue-400">response</span> = <span class="text-purple-400">await</span> <span class="text-yellow-400">fetch</span>(<span class="text-green-400">'data/index.json'</span>);
+  <span class="text-purple-400">const</span> <span class="text-blue-400">stations</span> = <span class="text-purple-400">await</span> <span class="text-blue-400">response</span>.<span class="text-yellow-400">json</span>();
+  
+  <span class="text-slate-500">// Filter by province</span>
+  <span class="text-purple-400">const</span> <span class="text-blue-400">bagmati</span> = <span class="text-blue-400">stations</span>.<span class="text-yellow-400">filter</span>(s => s.<span class="text-accent">province</span> === <span class="text-yellow-400">3</span>);
+  
+  <span class="text-slate-500">// Search by name</span>
+  <span class="text-purple-400">const</span> <span class="text-blue-400">kantipur</span> = <span class="text-blue-400">stations</span>.<span class="text-yellow-400">find</span>(s => s.<span class="text-accent">name</span>.<span class="text-yellow-400">includes</span>(<span class="text-green-400">'Kantipur'</span>));
+  
+  <span class="text-blue-400">console</span>.<span class="text-yellow-400">log</span>(<span class="text-green-400">`Found ${stations.length} stations`</span>);
+  <span class="text-purple-400">return</span> <span class="text-blue-400">stations</span>;
+}</code></pre>
+                    </div>
+                    <div id="python" class="tab-content hidden">
+                        <pre class="font-mono text-sm text-slate-300 overflow-x-auto"><code><span class="text-purple-400">import</span> json
+<span class="text-purple-400">import</span> urllib.request
+
+<span class="text-slate-500"># Load stations from JSON file</span>
+<span class="text-purple-400">with</span> urllib.request.<span class="text-yellow-400">urlopen</span>(<span class="text-green-400">'data/index.json'</span>) <span class="text-purple-400">as</span> <span class="text-blue-400">response</span>:
+    <span class="text-blue-400">stations</span> = json.<span class="text-yellow-400">load</span>(<span class="text-blue-400">response</span>)
+
+<span class="text-slate-500"># Filter stations by province</span>
+<span class="text-blue-400">bagmati_stations</span> = [s <span class="text-purple-400">for</span> s <span class="text-purple-400">in</span> <span class="text-blue-400">stations</span> <span class="text-purple-400">if</span> s[<span class="text-green-400">'province'</span>] == <span class="text-yellow-400">3</span>]
+
+<span class="text-slate-500"># Search stations by name</span>
+<span class="text-blue-400">kantipur</span> = [s <span class="text-purple-400">for</span> s <span class="text-purple-400">in</span> <span class="text-blue-400">stations</span> <span class="text-purple-400">if</span> <span class="text-green-400">'Kantipur'</span> <span class="text-purple-400">in</span> s[<span class="text-green-400">'name'</span>]]
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">f"Total stations: {len(stations)}"</span>)
+<span class="text-yellow-400">print</span>(<span class="text-green-400">f"Bagmati Province: {len(bagmati_stations)}"</span>)</code></pre>
+                    </div>
+                    <div id="curl" class="tab-content hidden">
+                        <pre class="font-mono text-sm text-slate-300 overflow-x-auto"><code><span class="text-slate-500"># Download and view the JSON data</span>
+<span class="text-yellow-400">curl</span> <span class="text-green-400">-o stations.json</span> <span class="text-green-400">"data/index.json"</span>
+
+<span class="text-slate-500"># Pretty print with jq</span>
+<span class="text-yellow-400">cat</span> <span class="text-blue-400">stations.json</span> <span class="text-blue-400">|</span> <span class="text-yellow-400">jq</span> <span class="text-green-400">'.'</span>
+
+<span class="text-slate-500"># Filter specific fields</span>
+<span class="text-yellow-400">cat</span> <span class="text-blue-400">stations.json</span> <span class="text-blue-400">|</span> <span class="text-yellow-400">jq</span> <span class="text-green-400">'.[] | {name: .name, freq: .frequency}'</span>
+
+<span class="text-slate-500"># Count stations by province</span>
+<span class="text-yellow-400">cat</span> <span class="text-blue-400">stations.json</span> <span class="text-blue-400">|</span> <span class="text-yellow-400">jq</span> <span class="text-green-400">'group_by(.province) | map({province: .[0].province, count: length})'</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Apps Using Our Data -->
+        <section class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent">Apps Using Our Data</h2>
+                <p class="text-xl text-slate-400 max-w-2xl mx-auto">
+                    This database was originally created for <strong class="text-primary">YoRadio</strong> app,<br>
+                    but it's <span class="text-green-400">free for everyone</span> to use in their projects!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- App 1 - YoRadio -->
+                <a href="https://github.com/Shubhamnpk/yoradio" target="_blank" rel="noopener" class="group bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/30 rounded-2xl p-6 hover:border-primary/50 transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-2 py-1 bg-primary/20 text-primary text-xs font-semibold rounded-full">OFFICIAL</span>
+                    </div>
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        🎧
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">YoRadio</h3>
+                    <p class="text-slate-400 text-sm mb-4">The main app this database was built for. Cross-platform radio streaming application.</p>
+                    <div class="flex items-center gap-2 text-primary text-sm font-medium">
+                        View on GitHub
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- App 2 - Validation Script -->
+                <a href="validate_urls.py" class="group bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        🐍
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Validation Script</h3>
+                    <p class="text-slate-400 text-sm mb-4">Python tool to validate stream URLs and separate active/inactive stations.</p>
+                    <div class="flex items-center gap-2 text-primary text-sm font-medium">
+                        Download
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- App 3 - Your App Here -->
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+                    <div class="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center text-2xl mb-4">
+                        📱
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Your App Here</h3>
+                    <p class="text-slate-400 text-sm mb-4">Built something with our API? We'd love to feature it!</p>
+                    <a href="https://github.com/Shubhamnpk/yoradio-api/issues" target="_blank" class="text-primary text-sm font-medium hover:text-secondary transition-colors">
+                        Submit your app →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Submit CTA -->
+            <div class="mt-12 text-center">
+                <p class="text-slate-400 mb-4">Built something amazing with Yo Radio API?</p>
+                <a href="https://github.com/Shubhamnpk/yoradio-api/issues/new" target="_blank" rel="noopener" 
+                   class="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    Submit Your App
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-white/[0.03] to-white/[0.01] border-t border-white/10 py-16 px-4 sm:px-6 lg:px-8 mt-24">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <svg width="40" height="40" viewBox="0 0 200 200" class="inline-block">
+                            <circle cx="100" cy="100" r="95" fill="#1e293b" stroke="url(#footGrad)" stroke-width="4"/>
+                            <path d="M100 50 L75 150 L125 150 Z" fill="url(#footGrad)"/>
+                            <circle cx="100" cy="50" r="8" fill="#ec4899"/>
+                            <defs>
+                                <linearGradient id="footGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#6366f1"/>
+                                    <stop offset="100%" style="stop-color:#8b5cf6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="text-2xl font-bold text-gradient">Yo Radio API</span>
+                    </div>
+                    <p class="text-slate-400 mb-6 max-w-md">
+                        Nepal's premier radio station database. Free, open-source, and developer-friendly API for accessing 400+ radio stations across all 7 provinces.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/Shubhamnpk/yoradio-api" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 hover:border-primary/50 transition-all duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="mailto:contact@yoradio.api" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 hover:border-primary/50 transition-all duration-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-slate-400 hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="#api" class="text-slate-400 hover:text-primary transition-colors">API Documentation</a></li>
+                        <li><a href="#stations" class="text-slate-400 hover:text-primary transition-colors">Browse Stations</a></li>
+                        <li><a href="#examples" class="text-slate-400 hover:text-primary transition-colors">Code Examples</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-3">
+                        <li><a href="https://github.com/Shubhamnpk/yoradio-api" target="_blank" rel="noopener" class="text-slate-400 hover:text-primary transition-colors">GitHub Repository</a></li>
+                        <li><a href="data/index.json" class="text-slate-400 hover:text-primary transition-colors">Download JSON</a></li>
+                        <li><a href="data/active.json" class="text-slate-400 hover:text-primary transition-colors">Active Stations</a></li>
+                        <li><a href="validate_urls.py" class="text-slate-400 hover:text-primary transition-colors">Validation Script</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-slate-500 text-sm">
+                    © 2024 Yo Radio API. Built with ❤️ for Nepal's radio community.
+                </div>
+                <div class="flex items-center gap-6 text-sm">
+                    <span class="text-slate-500">Made by <a href="https://github.com/Shubhamnpk" target="_blank" rel="noopener" class="text-primary hover:text-secondary transition-colors">@Shubhamnpk</a></span>
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-slate-400">API Active</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('border-primary', 'bg-white/5', 'text-white');
+                    b.classList.add('border-transparent', 'text-slate-400');
+                });
+                btn.classList.remove('border-transparent', 'text-slate-400');
+                btn.classList.add('border-primary', 'bg-white/5', 'text-white');
+                
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(btn.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // Load stations from API
+        let allStations = [];
+        let oldStations = [];
+        let currentStation = null;
+        let showOldStations = false;
+        let currentPage = 1;
+        // Dynamic base path detection for GitHub Pages subdirectory deployment
+        const basePath = window.location.pathname.includes('/yoradio-api/') 
+            ? '/yoradio-api' 
+            : '';
+
+        const itemsPerPage = 12;
+        let filteredStations = [];
+
+        async function loadStations() {
+            try {
+                // Load main stations with dynamic base path
+                const response = await fetch(`${basePath}/data/index.json`);
+                allStations = await response.json();
+                
+                // Also load old/invalid stations
+                try {
+                    const oldResponse = await fetch(`${basePath}/data/old.json`);
+                    oldStations = await oldResponse.json();
+                } catch (e) {
+                    console.log('No old stations file found');
+                    oldStations = [];
+                }
+                
+                // Update station count badge
+                const totalStations = allStations.length;
+                const activeStations = allStations.filter(s => !s._validation || s._validation.valid).length;
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `${totalStations} Stations Available (${activeStations} Active)`;
+                
+                filteredStations = getDisplayedStations();
+                currentPage = 1;
+                renderStationsPage();
+            } catch (error) {
+                console.error('Error loading stations:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div class="text-red-400">Error loading stations. Please try again.</div>
+                `;
+            }
+        }
+
+        function getDisplayedStations() {
+            if (showOldStations) {
+                return [...allStations, ...oldStations];
+            }
+            return allStations;
+        }
+
+        // Toggle old stations
+        document.getElementById('toggleOldStations').addEventListener('click', () => {
+            showOldStations = !showOldStations;
+            const toggleBtn = document.getElementById('toggleOldStations');
+            const toggleKnob = document.getElementById('toggleOldStationsKnob');
+            const notice = document.getElementById('oldStationsNotice');
+            
+            if (showOldStations) {
+                toggleBtn.classList.remove('bg-slate-700');
+                toggleBtn.classList.add('bg-red-500');
+                toggleKnob.classList.remove('translate-x-1');
+                toggleKnob.classList.add('translate-x-6');
+                notice.classList.remove('hidden');
+            } else {
+                toggleBtn.classList.add('bg-slate-700');
+                toggleBtn.classList.remove('bg-red-500');
+                toggleKnob.classList.add('translate-x-1');
+                toggleKnob.classList.remove('translate-x-6');
+                notice.classList.add('hidden');
+            }
+            
+            // Re-run filter which will update filteredStations and render
+            filterStations();
+        });
+
+        function renderStationsPage() {
+            const grid = document.getElementById('stationsGrid');
+            const loadingState = document.getElementById('loadingState');
+            const emptyState = document.getElementById('emptyState');
+            const pagination = document.getElementById('pagination');
+
+            loadingState.classList.add('hidden');
+
+            if (filteredStations.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                pagination.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            pagination.classList.remove('hidden');
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredStations.length);
+            const stationsToShow = filteredStations.slice(startIndex, endIndex);
+            
+            // Update pagination info
+            document.getElementById('showingStart').textContent = startIndex + 1;
+            document.getElementById('showingEnd').textContent = endIndex;
+            document.getElementById('totalStations').textContent = filteredStations.length;
+            
+            // Update buttons
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages;
+            
+            // Render page numbers
+            const pageNumbers = document.getElementById('pageNumbers');
+            let pageButtons = '';
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    pageButtons += `<button onclick="goToPage(${i})" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors ${i === currentPage ? 'bg-primary text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'}">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    pageButtons += `<span class="text-slate-500 px-2">...</span>`;
+                }
+            }
+            pageNumbers.innerHTML = pageButtons;
+            
+            // Render stations
+            grid.innerHTML = stationsToShow.map(station => {
+                const isOldStation = station._validation && !station._validation.valid;
+                const cardClass = isOldStation 
+                    ? 'station-card bg-gradient-to-br from-red-500/5 to-red-600/5 border border-red-500/20 rounded-xl p-6 relative overflow-hidden group opacity-75'
+                    : 'station-card bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-6 relative overflow-hidden group cursor-pointer';
+                
+                return `
+                <div class="${cardClass}" ${!isOldStation ? `onclick="playStation('${station.id}', '${station.name}', '${station.streamUrl}')"` : ''}>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl ${isOldStation ? 'bg-red-500/20' : 'bg-gradient-to-r from-primary/20 to-secondary/20'} flex items-center justify-center text-2xl">
+                            ${isOldStation ? '⚠️' : '📻'}
+                        </div>
+                        ${currentStation === station.id ? `
+                            <div class="flex gap-1">
+                                <div class="w-1 h-4 bg-green-500 rounded-full animate-pulse"></div>
+                                <div class="w-1 h-4 bg-green-500 rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
+                                <div class="w-1 h-4 bg-green-500 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <h3 class="font-semibold text-white mb-1 ${isOldStation ? '' : 'group-hover:text-primary'} transition-colors">${station.name}</h3>
+                    ${isOldStation ? `<p class="text-xs text-red-400 mb-2">⚠️ ${station._validation.message}</p>` : ''}
+                    <p class="text-sm text-slate-400 mb-3">${station.address || 'Nepal'}</p>
+                    <div class="flex items-center gap-4 text-sm">
+                        ${station.frequency ? `<span class="text-slate-500">📡 ${station.frequency} MHz</span>` : ''}
+                        ${station.province ? `<span class="text-slate-500">📍 Province ${station.province}</span>` : ''}
+                    </div>
+                </div>
+            `}).join('');
+            
+            // Scroll to stations section
+            if (window.location.hash === '#stations') {
+                document.getElementById('stations').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        window.goToPage = function(page) {
+            currentPage = page;
+            renderStationsPage();
+        };
+
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderStationsPage();
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredStations.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderStationsPage();
+            }
+        });
+
+        // Player state
+        let isPlaying = false;
+        
+        function playStation(id, name, url) {
+            const player = document.getElementById('player');
+            const playerContainer = document.getElementById('audioPlayer');
+            const nowPlaying = document.getElementById('nowPlaying');
+            const visualizer = document.getElementById('visualizer');
+            const playIcon = document.getElementById('playIcon');
+
+            if (currentStation === id) {
+                // Toggle play/pause if same station
+                togglePlayPause();
+            } else {
+                // Play new station
+                currentStation = id;
+                
+                // Use proxy for HTTP streams when running on localhost
+                // This bypasses browser mixed-content restrictions
+                let streamUrl = url;
+                if (window.location.hostname === 'localhost' && url.startsWith('http://')) {
+                    streamUrl = `/proxy?url=${encodeURIComponent(url)}`;
+                    console.log('Using proxy for HTTP stream:', streamUrl);
+                }
+                
+                player.src = streamUrl;
+                player.volume = document.getElementById('volumeSlider').value / 100;
+                player.play();
+                isPlaying = true;
+                nowPlaying.textContent = name;
+                playerContainer.classList.remove('hidden');
+                
+                // Update UI
+                visualizer.classList.remove('opacity-0');
+                playIcon.classList.add('opacity-0');
+                updatePlayPauseButton();
+            }
+
+            renderStationsPage();
+        }
+
+        function togglePlayPause() {
+            const player = document.getElementById('player');
+            const visualizer = document.getElementById('visualizer');
+            const playIcon = document.getElementById('playIcon');
+            
+            if (isPlaying) {
+                player.pause();
+                isPlaying = false;
+                visualizer.classList.add('opacity-0');
+                playIcon.classList.remove('opacity-0');
+            } else if (currentStation) {
+                player.play();
+                isPlaying = true;
+                visualizer.classList.remove('opacity-0');
+                playIcon.classList.add('opacity-0');
+            }
+            updatePlayPauseButton();
+        }
+
+        function updatePlayPauseButton() {
+            const pauseIcon = document.getElementById('pauseIcon');
+            const playIconBtn = document.getElementById('playIconBtn');
+            
+            if (isPlaying) {
+                pauseIcon.classList.remove('hidden');
+                playIconBtn.classList.add('hidden');
+            } else {
+                pauseIcon.classList.add('hidden');
+                playIconBtn.classList.remove('hidden');
+            }
+        }
+
+        // Play/Pause button handler
+        document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause);
+
+        // Volume control
+        const volumeSlider = document.getElementById('volumeSlider');
+        const muteBtn = document.getElementById('muteBtn');
+        let previousVolume = 80;
+
+        volumeSlider.addEventListener('input', (e) => {
+            const player = document.getElementById('player');
+            const volume = e.target.value / 100;
+            player.volume = volume;
+            updateVolumeIcon(volume);
+        });
+
+        muteBtn.addEventListener('click', () => {
+            const player = document.getElementById('player');
+            if (player.volume > 0) {
+                previousVolume = volumeSlider.value;
+                volumeSlider.value = 0;
+                player.volume = 0;
+            } else {
+                volumeSlider.value = previousVolume;
+                player.volume = previousVolume / 100;
+            }
+            updateVolumeIcon(player.volume);
+        });
+
+        function updateVolumeIcon(volume) {
+            const volumeHigh = document.getElementById('volumeHigh');
+            const volumeMute = document.getElementById('volumeMute');
+            
+            if (volume === 0) {
+                volumeHigh.classList.add('hidden');
+                volumeMute.classList.remove('hidden');
+            } else {
+                volumeHigh.classList.remove('hidden');
+                volumeMute.classList.add('hidden');
+            }
+        }
+
+        // Audio event listeners
+        document.getElementById('player').addEventListener('playing', () => {
+            isPlaying = true;
+            updatePlayPauseButton();
+            document.getElementById('visualizer').classList.remove('opacity-0');
+            document.getElementById('playIcon').classList.add('opacity-0');
+            document.getElementById('statusText').textContent = 'Live Stream';
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-green-500 animate-pulse';
+            document.getElementById('reportBrokenBtn').classList.add('hidden');
+        });
+
+        document.getElementById('player').addEventListener('pause', () => {
+            isPlaying = false;
+            updatePlayPauseButton();
+            document.getElementById('visualizer').classList.add('opacity-0');
+            document.getElementById('playIcon').classList.remove('opacity-0');
+        });
+
+        document.getElementById('player').addEventListener('error', (e) => {
+            const error = e.target.error;
+            let errorMessage = 'Stream error';
+            
+            if (error) {
+                switch (error.code) {
+                    case error.MEDIA_ERR_NETWORK:
+                        errorMessage = 'Network error - stream unreachable';
+                        break;
+                    case error.MEDIA_ERR_DECODE:
+                        errorMessage = 'Format error - incompatible stream';
+                        break;
+                    case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                        errorMessage = 'Source not supported or geo-blocked';
+                        break;
+                    default:
+                        errorMessage = 'Failed to play stream';
+                }
+            }
+            
+            document.getElementById('statusText').textContent = errorMessage;
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-red-500';
+            document.getElementById('visualizer').classList.add('opacity-0');
+            document.getElementById('playIcon').classList.remove('opacity-0');
+            
+            // Show report button on error
+            document.getElementById('reportBrokenBtn').classList.remove('hidden');
+        });
+
+        // Report broken stream
+        document.getElementById('reportBrokenBtn').addEventListener('click', () => {
+            const stationName = document.getElementById('nowPlaying').textContent;
+            const issueTitle = encodeURIComponent(`Broken Stream: ${stationName}`);
+            const issueBody = encodeURIComponent(
+                `**Station:** ${stationName}\n` +
+                `**Error:** ${document.getElementById('statusText').textContent}\n` +
+                `**Time:** ${new Date().toISOString()}\n\n` +
+                `Please verify and move this station to old.json if confirmed broken.`
+            );
+            
+            window.open(
+                `https://github.com/Shubhamnpk/yoradio-api/issues/new?title=${issueTitle}&body=${issueBody}`,
+                '_blank'
+            );
+        });
+
+        document.getElementById('player').addEventListener('waiting', () => {
+            document.getElementById('statusText').textContent = 'Buffering...';
+            document.getElementById('statusIndicator').className = 'w-2 h-2 rounded-full bg-yellow-500 animate-pulse';
+        });
+
+        document.getElementById('closePlayer').addEventListener('click', () => {
+            const player = document.getElementById('player');
+            const playerContainer = document.getElementById('audioPlayer');
+            player.pause();
+            isPlaying = false;
+            currentStation = null;
+            playerContainer.classList.add('hidden');
+            updatePlayPauseButton();
+            renderStationsPage();
+        });
+
+        function filterStations() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const province = document.getElementById('provinceFilter').value;
+            const stationsToFilter = getDisplayedStations();
+
+            filteredStations = stationsToFilter.filter(station => {
+                const matchesSearch = station.name.toLowerCase().includes(searchTerm) ||
+                                    (station.address && station.address.toLowerCase().includes(searchTerm));
+                const matchesProvince = !province || station.province === parseInt(province);
+                return matchesSearch && matchesProvince;
+            });
+            
+            // Update badge with filtered count
+            const totalShown = filteredStations.length;
+            const originalTotal = allStations.length;
+            if (totalShown !== originalTotal) {
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `Showing ${totalShown} of ${originalTotal} Stations`;
+            } else {
+                const activeStations = allStations.filter(s => !s._validation || s._validation.valid).length;
+                document.getElementById('stationCountBadge').innerHTML = 
+                    `${originalTotal} Stations Available (${activeStations} Active)`;
+            }
+            
+            // Reset to page 1 when filtering
+            currentPage = 1;
+            renderStationsPage();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            filterStations();
+        });
+
+        document.getElementById('provinceFilter').addEventListener('change', () => {
+            filterStations();
+        });
+
+        // Load stations on page load
+        loadStations();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

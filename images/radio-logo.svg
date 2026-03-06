@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#bgGradient)" stroke="url(#borderGradient)" stroke-width="2"/>
+  
+  <!-- Radio Tower Base -->
+  <path d="M100 40 L70 160 L85 160 L95 130 L105 130 L115 160 L130 160 L100 40" 
+        fill="url(#towerGradient)" 
+        stroke="url(#strokeGradient)" 
+        stroke-width="1.5"
+        stroke-linejoin="round"/>
+  
+  <!-- Tower Crossbars -->
+  <line x1="82" y1="115" x2="118" y2="115" stroke="url(#strokeGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="88" y1="95" x2="112" y2="95" stroke="url(#strokeGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="93" y1="75" x2="107" y2="75" stroke="url(#strokeGradient)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Antenna Top -->
+  <circle cx="100" cy="40" r="6" fill="url(#accentGradient)"/>
+  
+  <!-- Radio Waves - Left -->
+  <path d="M60 60 Q50 75 50 100 Q50 125 60 140" 
+        stroke="url(#waveGradient1)" 
+        stroke-width="3" 
+        stroke-linecap="round"
+        fill="none"
+        opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M45 50 Q30 70 30 100 Q30 130 45 150" 
+        stroke="url(#waveGradient2)" 
+        stroke-width="2.5" 
+        stroke-linecap="round"
+        fill="none"
+        opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Radio Waves - Right -->
+  <path d="M140 60 Q150 75 150 100 Q150 125 140 140" 
+        stroke="url(#waveGradient1)" 
+        stroke-width="3" 
+        stroke-linecap="round"
+        fill="none"
+        opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M155 50 Q170 70 170 100 Q170 130 155 150" 
+        stroke="url(#waveGradient2)" 
+        stroke-width="2.5" 
+        stroke-linecap="round"
+        fill="none"
+        opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Signal Pulse from Antenna -->
+  <circle cx="100" cy="40" r="10" stroke="url(#accentGradient)" stroke-width="1.5" fill="none" opacity="0">
+    <animate attributeName="r" values="10;40" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="100" cy="40" r="10" stroke="url(#accentGradient)" stroke-width="1.5" fill="none" opacity="0">
+    <animate attributeName="r" values="10;40" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.8;0" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Music Notes -->
+  <g opacity="0.9">
+    <text x="135" y="85" font-family="Arial, sans-serif" font-size="20" fill="url(#accentGradient)">♪</text>
+    <text x="55" y="95" font-family="Arial, sans-serif" font-size="16" fill="url(#accentGradient)">♫</text>
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <linearGradient id="towerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.9" />
+    </linearGradient>
+    
+    <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a5b4fc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:0.9" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+</svg>
